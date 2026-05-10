@@ -12,12 +12,12 @@ This repository contains the codes used in the study:
 
 The main workflows include:
 
-1. Trend and coefficient of variation (CV) calculation
+1. Slope and coefficient of variatio calculation
 2. Mann–Kendall test and Sen’s slope analysis
 3. Random forest attribution analysis
-4. Structural equation modeling (SEM)
+4. Structural equation modeling
 
-The study aims to quantify the impacts of climate change and vegetation dynamics on water yield trends.
+The study aims to quantify the impacts of climate and vegetation changes on water yield.
 
 ---
 
@@ -29,7 +29,7 @@ Main variables include:
 
 | Variable | Description |
 |---|---|
-| yield | Water yield |
+| WY | Water yield |
 | pdsi | Palmer Drought Severity Index |
 | srad | Surface shortwave radiation |
 | soil | Soil moisture |
@@ -46,7 +46,7 @@ DOI: 10.17632/48wyypr7sd.1
 
 # Scripts
 
-## 1. calculate_trend_cv.py
+## 1. Slope+CV.py
 
 This script calculates:
 
@@ -58,11 +58,11 @@ for each variable during 1982–2020.
 
 Output:
 
-results/trend_cv_summary.csv
+results/slope_cv_summary.csv
 
 ---
 
-## 2. sen_mk_analysis.py
+## 2. Sen+M-K.py
 
 This script performs:
 
@@ -84,7 +84,7 @@ results/trend_analysis/
 
 ---
 
-## 3. random_forest_workflow.py
+## 3. RF.py
 
 This script trains and applies the random forest model for climate-driven water yield prediction.
 
@@ -92,11 +92,9 @@ Method:
 
 Pixels with minimal vegetation change (LAI slope between −0.01 and 0.01) are selected as climate-dominated regions.
 
-The random forest model is trained using climate variables and then applied to the entire study area to estimate climate-driven water yield trends.
+The random forest model is trained using climate factors and then applied to the entire study area to estimate climate-driven water yield trend.
 
-Vegetation effects are calculated as:
-
-Vegetation effect = Observed yield trend − Predicted climate-driven yield trend
+climate-driven water yield trend = Observed yield trend − Predicted climate-driven yield trend
 
 Outputs:
 
@@ -107,9 +105,9 @@ results/model_metrics.csv
 
 ---
 
-## 4. sem_analysis.R
+## 4. SEM.R
 
-This script performs structural equation modeling (SEM) to evaluate the direct and indirect effects of climate and vegetation changes on water yield.
+This script performs structural equation modeling (SEM) to evaluate the direct and indirect effects of climate and vegetation factors on water yield.
 
 The workflow includes:
 
@@ -139,7 +137,3 @@ Before running the scripts:
 3. Update local paths if necessary.
 
 ---
-
-# Citation
-
-If you use this repository, please cite the associated manuscript.
