@@ -1,30 +1,45 @@
 import os
-import glob
 import numpy as np
 import rasterio
 import pymannkendall as mk
 
-# ======================
+# =========================================================
 # Configuration
-# ======================
+# =========================================================
 
-INPUT_DIRECTORY = os.path.join("data", "soil_moisture")
-OUTPUT_DIRECTORY = os.path.join("results", "trend_analysis")
-
-VARIABLE_NAME = "soil_moisture"
-
-YEARS = list(range(1982, 2021))
+# Input and output directories
+BASE_INPUT_DIR = "data"
+OUTPUT_DIRECTORY = os.path.join(
+    "results",
+    "trend_analysis"
+)
 
 os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
-# ======================
-# Functions
-# ======================
+# Variables to process
+VARIABLES = [
+    "yield",
+    "pdsi",
+    "srad",
+    "soil",
+    "tmean",
+    "vpd",
+    "ws",
+    "LAI"
+]
 
-def read_rasters(input_dir, years):
+# Analysis period
+YEARS = list(range(1982, 2021))
+
+# =========================================================
+# Functions
+# =========================================================
+
+def read_rasters(input_dir, variable_name, years):
     """
     Read annual raster data into a 3D array.
     """
+
     rasters = []
     profile = None
 
@@ -32,7 +47,8 @@ def read_rasters(input_dir, years):
 
         raster_path = os.path.join(
             input_dir,
-            f"{VARIABLE_NAME}_{year}.tif"
+            variable_name,
+            f"{variable_name}_{year}.tif"
         )
 
         with rasterio.open(raster_path) as src:
@@ -106,66 +122,76 @@ def save_raster(output_path, data, profile):
         )
 
 
-# ======================
-# Main
-# ======================
+# =========================================================
+# Main Workflow
+# =========================================================
 
-print("Reading raster data...")
+for variable in VARIABLES:
 
-data_stack, raster_profile = read_rasters(
-    INPUT_DIRECTORY,
-    YEARS
-)
+    print(f"\nProcessing variable: {variable}")
 
-print("Running Mann-Kendall test and Sen's slope analysis...")
+    # Read raster stack
+    data_stack, raster_profile = read_rasters(
+        BASE_INPUT_DIR,
+        variable,
+        YEARS
+    )
 
-z_raster, p_raster, slope_raster = mk_sen_analysis(
-    data_stack
-)
+    print("Running Mann-Kendall test and Sen's slope analysis...")
 
-# Significance mask
-sig_raster = np.where(
-    p_raster < 0.05,
-    1,
-    0
-)
+    z_raster, p_raster, slope_raster = mk_sen_analysis(
+        data_stack
+    )
 
-print("Saving outputs...")
+    # Significance mask
+    sig_raster = np.where(
+        p_raster < 0.05,
+        1,
+        0
+    )
 
-save_raster(
-    os.path.join(
-        OUTPUT_DIRECTORY,
-        f"{VARIABLE_NAME}_z.tif"
-    ),
-    z_raster,
-    raster_profile
-)
+    print("Saving outputs...")
 
-save_raster(
-    os.path.join(
-        OUTPUT_DIRECTORY,
-        f"{VARIABLE_NAME}_p.tif"
-    ),
-    p_raster,
-    raster_profile
-)
+    # Save z-statistic
+    save_raster(
+        os.path.join(
+            OUTPUT_DIRECTORY,
+            f"{variable}_z.tif"
+        ),
+        z_raster,
+        raster_profile
+    )
 
-save_raster(
-    os.path.join(
-        OUTPUT_DIRECTORY,
-        f"{VARIABLE_NAME}_slope.tif"
-    ),
-    slope_raster,
-    raster_profile
-)
+    # Save p-value
+    save_raster(
+        os.path.join(
+            OUTPUT_DIRECTORY,
+            f"{variable}_p.tif"
+        ),
+        p_raster,
+        raster_profile
+    )
 
-save_raster(
-    os.path.join(
-        OUTPUT_DIRECTORY,
-        f"{VARIABLE_NAME}_significance.tif"
-    ),
-    sig_raster,
-    raster_profile
-)
+    # Save Sen's slope
+    save_raster(
+        os.path.join(
+            OUTPUT_DIRECTORY,
+            f"{variable}_slope.tif"
+        ),
+        slope_raster,
+        raster_profile
+    )
 
-print("Analysis completed successfully.")
+    # Save significance mask
+    save_raster(
+        os.path.join(
+            OUTPUT_DIRECTORY,
+            f"{variable}_significance.tif"
+        ),
+        sig_raster,
+        raster_profile
+    )
+
+    print(f"{variable} completed.")
+
+print("\nAll variables processed successfully.")
