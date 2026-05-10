@@ -73,7 +73,7 @@ str(dataset_clean)
 # =========================================================
 
 vif_model <- lm(
-  Q_slope ~
+  WY_slope ~
     pdsi_slope +
     srad_slope +
     soil_slope +
@@ -105,7 +105,7 @@ write.csv(
 sem_model <- '
 
   # Direct effects on water yield
-  Q_slope ~
+  WY_slope ~
     pdsi_slope +
     srad_slope +
     tmean_slope +
