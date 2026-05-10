@@ -12,7 +12,7 @@ from scipy.stats import linregress
 BASE_FOLDER = os.path.join("data", "factor")
 
 FACTORS = {
-    "water_yield": "yield",
+    "water_yield": "WY",
     "pdsi": "pdsi",
     "shortwave_radiation": "srad",
     "soil_moisture": "soil",
