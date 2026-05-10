@@ -18,7 +18,7 @@ os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)
 
 # Variables to process
 VARIABLES = [
-    "yield",
+    "WY",
     "pdsi",
     "srad",
     "soil",
