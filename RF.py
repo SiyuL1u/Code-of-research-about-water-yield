@@ -57,7 +57,7 @@ FEATURES = [
     "ws_slope"
 ]
 
-TARGET = "yield_slope"
+TARGET = "WY_slope"
 
 # =========================================================
 # Raster File Definitions
